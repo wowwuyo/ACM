@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+
+int main(){
+
+	int i = 0;
+	char str[9];
+	char *point;
+	char *delim = "-";
+	int value = 0,part1Value = 0, part2Value = 0;
+	int part = 0;
+	int dim = 2;
+	int count, countLoop;
+
+
+	scanf("%d",&count);
+	while(count<1 || count > 100){
+		scanf("%d",&count);
+	}
+
+	count = count+1;
+
+	int result[count-1];
+
+	for(countLoop = 0; countLoop <count; countLoop++){
+		part = 0;
+		part1Value = 0;
+		part2Value = 0;
+		dim = 2;
+
+		gets(str);
+
+		point = strtok(str,delim);
+
+		while(point != NULL){
+			if(part < 3){
+				for(i=0; i<3; i++){
+					value = 0;
+					value = ((int)*(point+i))-65;
+					part1Value += (int)floor(value*pow(26,dim));
+					part++;
+					dim--;
+				}
+			}
+			else{
+				part2Value = atoi(point);
+			}
+			point = strtok (NULL, delim);
+		}
+
+		if(countLoop!= 0){
+			if(abs(part2Value-part1Value) <= 100){
+				result[countLoop-1] = 1;
+			}
+			else{
+				result[countLoop-1] = 0;
+			}
+		}
+	}
+
+	for(countLoop = 0; countLoop < count-1; countLoop++){
+		if(result[countLoop] == 1){
+			printf("nice\n");
+		}
+		else{
+			printf("not nice\n");
+		}
+	}
+
+	return 0;
+}
