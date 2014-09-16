@@ -1,0 +1,70 @@
+/*---------------------------------------------------------
+ * Name		: ACM12442.c
+ * Author	: Wuyo
+ * Version	: 1.0
+ * Verdict	: AC
+ * Description : 12442	Forwarding Emails
+ * I waste a lot of time to improve this program.
+ * This program had better to use "dynamic programming"!!!
+ * Using an array to recorded the result of sub-problem, which can save
+ * a lot of time. Because it can save a lot of time on calculation again.
+ * */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int data[50001],vis_data[50001],c[50001];
+int max = 0, str = 0, tempmax = 0, tempstr = 0;
+int couuuu = 0;
+int Cal(int now, int num){
+	couuuu++;
+	if(vis_data[now] != -1){
+		num++;
+		vis_data[now] = -1;
+		printf("*Now: %d, Next: %d\n",now,data[now]);
+		num = Cal(data[now], num);
+		vis_data[now] = 0;
+		c[now] = num;
+		printf("c[%d] = %d\n",now,num);
+	}
+	return num;
+}
+
+int main(void) {
+
+	int T = 0,N = 0,u = 0,v = 0;
+	int CaseCount = 0, iLoop = 0;
+	scanf("%d", &T);
+	while(CaseCount < T){
+
+		scanf("%d", &N);
+		for(iLoop = 0; iLoop < N; iLoop++){
+			scanf("%d %d",&u, &v);
+			data[u] = v;
+			vis_data[u] = 0;
+			c[u] = -1;
+		}
+
+
+		max = 0;
+		for(iLoop = 1; iLoop <= N; iLoop++){
+			tempstr = iLoop;
+			printf("Now: %d, Next: %d\n",iLoop,data[iLoop]);
+			if(c[iLoop] == -1){
+				printf("c[iLoop] == -1\n");
+				tempmax = Cal(iLoop,0);
+			}
+			if(tempmax > max){
+				str = tempstr;
+				max = tempmax;
+			}
+		}
+
+		printf("Case %d: %d\n",CaseCount+1,str);
+		printf("couuu: %d\n",couuuu);
+		printf("==================================\n");
+		CaseCount++;
+	}
+	return EXIT_SUCCESS;
+}
