@@ -1,0 +1,275 @@
+/*
+ ============================================================================
+ Name        : ACM10189.c
+ Author      : Wuyo
+ Version     :
+ Verdict	 : WA
+ Description : 10189 - Minesweeper. Problem B: Minesweeper
+ 這次搞了老半天還是WA，而且完全抓不出問題在哪裡。
+ 題目要用二為陣列寫會比較好，但我堅持用一維，所以會造成程式分不清
+ 2 1
+ *
+ .
+
+ 和
+
+ 1 2
+ * .
+
+ 的差別，所以有需要特別處理。
+ 測試輸入的範例為
+Input:
+
+4 4
+*...
+.*..
+..*.
+...*
+4 4
+****
+****
+****
+****
+4 4
+....
+....
+....
+....
+4 4
+*.*.
+.*.*
+*.*.
+.*.*
+6 6
+......
+******
+......
+******
+......
+******
+1 1
+.
+1 1
+*
+1 7
+.*.*.*.
+7 1
+*
+.
+*
+.
+*
+.
+*
+10 1
+*
+.
+*
+.
+*
+.
+.
+*
+*
+.
+0 0
+
+Output :
+Field #1:
+*210
+2*21
+12*2
+012*
+
+Field #2:
+****
+****
+****
+****
+
+Field #3:
+0000
+0000
+0000
+0000
+
+Field #4:
+*3*2
+3*4*
+*4*3
+2*3*
+
+Field #5:
+233332
+******
+466664
+******
+466664
+******
+
+Field #6:
+0
+
+Field #7:
+*
+
+Field #8:
+1*2*2*1
+
+Field #9:
+*
+2
+*
+2
+*
+2
+*
+
+Field #10:
+*
+2
+*
+2
+*
+1
+1
+*
+*
+1
+
+心得: 在搞了老半天之後，總算發現並解決當col = 1的問題
+其實這次會搞很久有兩個原因:
+第一個是堅持用一維的關係。因為用一維有特殊情況，所以才搞了很久
+第二個是測試的不夠周到。當發現特殊情況以後就已經做了修正了，但是後來才發現修正的不夠，除了相鄰的都該設為-1
+總結，寫了那麼久有時自己還是有些無聊的堅持和不夠細心。
+ ============================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int *Fun1(int i, int row, int col, int *iArray){
+	int ary[9], iLoop = 0;
+
+	ary[0] = i - col - 1;
+	ary[1] = i - col;
+	ary[2] = i - col + 1;
+	ary[3] = i - 1;
+	ary[4] = i;
+	ary[5] = i + 1;
+	ary[6] = i + col - 1;
+	ary[7] = i + col;
+	ary[8] = i + col + 1;
+
+	/*Delete out of range*/
+	for(iLoop = 0; iLoop < 9; iLoop++){
+		if(ary[iLoop] < 0 || ary[iLoop] > row * col - 1){
+			ary[iLoop] = -1;
+		}
+	}
+
+	/*In which area*/
+	if(i % col == 0){
+		/*i - row - 1*/
+		ary[0] = -1;
+
+		/* i - 1;*/
+		ary[3] =-1;
+
+		/*i + row - 1*/
+		ary[6] = -1;
+	}
+	else if(i % col == col - 1){
+		/*i - row + 1*/
+		ary[2] = -1;
+		/*i + 1*/
+		ary[5] = -1;
+		/*i + row + 1*/
+		ary[8] = -1;
+	}
+
+
+	/* When input col is 1, only ary[1] and ary[5] are neighbor */
+	if(col == 1){
+		ary[0] = -1;
+		ary[2] = -1;
+		ary[6] = -1;
+		ary[8] = -1;
+		ary[7] = -1;
+		ary[3] = -1;
+	}
+
+	for(i = 0; i < 9; i++){
+		if(ary[i] != -1){
+			iArray[ary[i]] +=1;
+		}
+	}
+
+	return iArray;
+}
+
+void Cal(char *cp, int row, int col, int *iArray){
+	int iLoop;
+	char temp;
+	for(iLoop = 0; iLoop < row*col; iLoop++){
+		temp = *(cp++);
+		if(temp == '*'){
+			Fun1(iLoop, row, col, iArray);
+		}
+	}
+}
+int main(void) {
+
+	int row = 0, col = 0;
+	int iLoop = 0, jLoop;
+	int gamecount = 1;
+
+	while(scanf("%d %d",&row, &col) == 2){
+
+		/*EOF*/
+		if(row == 0 && col == 0){
+			break;
+		}
+		if(row <= 0 || row > 100){
+			break;
+		}
+		if(col <= 0 || col > 100){
+			break;
+		}
+
+		if(gamecount > 1){
+			printf("\n");
+		}
+		printf("Field #%d:\n", gamecount);
+		gamecount++;
+
+		//init. and set array
+		char cArray[row][col], *cp;
+		int iArray[row*col];
+		cp = &cArray[0][0];
+
+		for(iLoop = 0; iLoop < row * col; iLoop++){
+			iArray[iLoop] = 0;
+		}
+
+		for(iLoop = 0; iLoop < row; iLoop++){
+			scanf("%s", cArray[iLoop]);
+		}
+
+		Cal(cp, row, col, iArray);
+		int temp = 0;
+		for(iLoop = 0; iLoop < row; iLoop++){
+			for(jLoop = 0; jLoop < col; jLoop++){
+				if(*(cp++) == '*'){
+					printf("*");
+				}
+				else{
+					printf("%d",iArray[temp]);
+				}
+				temp++;
+			}
+			printf("\n");
+		}
+	}
+	return EXIT_SUCCESS;
+}
