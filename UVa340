@@ -1,0 +1,102 @@
+/*
+ ============================================================================
+ Name        : ACM340.c
+ Author      : Wuyo
+ Version     : 1.0
+ Verdict	 : Accepted
+ Description : ACM 340  Master-Mind Hints
+ ============================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+
+	int pwLength = 0, zerocount = 0;
+	int iLoop = 0,jLoop = 0,
+		a = 0,
+		b = 0,
+		gamecount = 1;
+
+	/*The length of pw*/
+	while(scanf("%d", &pwLength)==1){
+
+		/*End Game*/
+		if(pwLength == 0){
+			break;
+		}
+
+		printf("Game %d:\n",gamecount++);
+
+		int arrayPW[pwLength], pw[pwLength], temppw[pwLength];
+
+		/*Enter PW*/
+		for(iLoop = 0; iLoop < pwLength; iLoop++){
+			pw[iLoop] = 0;
+			temppw[iLoop] = 0;
+			scanf("%d", &pw[iLoop]);
+			temppw[iLoop]=pw[iLoop];
+		}
+
+		/*Enter Guest PW (GPW)*/
+		for(iLoop = 0; iLoop < pwLength; iLoop++){
+			arrayPW[iLoop] = 0;
+			scanf("%d", &arrayPW[iLoop]);
+		}
+
+		/*Check GPW*/
+		zerocount = 0;
+		for(iLoop = 0; iLoop < pwLength; iLoop++){
+			if(arrayPW[iLoop] == 0){
+				zerocount++;
+			}
+		}
+
+		/*Compare*/
+		while(zerocount != pwLength){
+
+			for(iLoop = 0; iLoop < pwLength; iLoop++){
+				temppw[iLoop] = pw[iLoop];
+			}
+
+			/*Part A Compare */
+			for(iLoop = 0; iLoop < pwLength; iLoop++){
+				if(temppw[iLoop] == arrayPW[iLoop]){
+					a++;
+					temppw[iLoop] = -1;
+					arrayPW[iLoop] = -1;
+				}
+			}
+
+			/*Part B Compare */
+			for(iLoop = 0; iLoop < pwLength; iLoop++){
+				for(jLoop = 0; jLoop < pwLength; jLoop++){
+					if(temppw[iLoop] != -1 && arrayPW[jLoop] != -1 && temppw[iLoop] == arrayPW[jLoop]){
+						b++;
+						temppw[iLoop] = -1;
+						arrayPW[jLoop] = -1;
+					}
+				}
+			}
+
+			printf("    (%d,%d)\n",a,b);
+
+			/*Reenter PW*/
+			zerocount = 0;
+			a = b = 0;
+			for(iLoop = 0; iLoop < pwLength; iLoop++){
+				arrayPW[iLoop] = 0;
+				scanf("%d", &arrayPW[iLoop]);
+			}
+
+			for(iLoop = 0; iLoop < pwLength; iLoop++){
+				if(arrayPW[iLoop] == 0){
+					zerocount++;
+				}
+			}
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
