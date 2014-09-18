@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void determine(int val){
+	int result = 0;
+	int kLoop = 0;
+
+	for(kLoop = 1; kLoop < val; kLoop++){
+		result +=(0 == (val % kLoop) ? kLoop : 0);
+	}
+
+	if(result == val){
+		printf("%*d  PERFECT\n", 5, val);
+	}
+	else if(result > val){
+		printf("%*d  ABUNDANT\n", 5, val);
+	}
+	else if(result < val){
+		printf("%*d  DEFICIENT\n", 5, val);
+	}
+}
+
+
+int main(){
+	int dataLen = 0;
+	int data[100];
+	int iLoop = 0;
+
+	for (dataLen = 0; 1 == scanf("%d", &data[dataLen]); dataLen++)
+	        if (0 == data[dataLen]) break;
+
+	printf("PERFECTION OUTPUT\n");
+
+	for(iLoop = 0; iLoop < dataLen; iLoop++){
+		determine(data[iLoop]);
+	}
+
+	printf("END OF OUTPUT\n");
+
+	return 0;
+}
