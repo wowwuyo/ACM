@@ -28,5 +28,7 @@ int main()
 		}
 		printf(" %d\n", a+1);
 	}
+	
+	printf("End\n");
 	return 0;
 }
